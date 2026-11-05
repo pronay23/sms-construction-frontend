@@ -21,8 +21,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [expenseModalOpen, setExpenseModalOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const pathname = usePathname();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Always close the mobile sidebar backdrop on navigation so it cannot
   // block clicks on the newly loaded page (e.g. after login → category).
@@ -203,20 +208,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>}
       </aside>
 
-      {createPortal(
-        <CreateExpenseModal
-          isOpen={expenseModalOpen}
-          onClose={() => setExpenseModalOpen(false)}
-          onSubmit={createExpense}
-          projects={projects}
-          categories={categories}
-          payments={payments}
-          currencies={currencies}
-          vendors={vendors}
-          lookupLoading={lookupLoading}
-        />,
-        document.body,
-      )}
+      {mounted &&
+        createPortal(
+          <CreateExpenseModal
+            isOpen={expenseModalOpen}
+            onClose={() => setExpenseModalOpen(false)}
+            onSubmit={createExpense}
+            projects={projects}
+            categories={categories}
+            payments={payments}
+            currencies={currencies}
+            vendors={vendors}
+            lookupLoading={lookupLoading}
+          />,
+          document.body,
+        )}
     </>
   );
 }
